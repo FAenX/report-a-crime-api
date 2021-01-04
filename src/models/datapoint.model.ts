@@ -1,5 +1,10 @@
 import {Entity, model, property} from '@loopback/repository';
 
+export interface Coordinates {
+  type: 'Point',
+  coordinates: number[]
+}
+
 @model()
 export class Datapoint extends Entity {
   @property({
@@ -16,9 +21,10 @@ export class Datapoint extends Entity {
   name: string;
 
   @property({
-    type: 'string',
+    type: 'object',
+    required: true,
   })
-  coords?: string;
+  coordinates: Coordinates; // use google geo-encoder
 
   @property({
     type: 'string',

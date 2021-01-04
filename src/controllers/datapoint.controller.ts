@@ -46,21 +46,13 @@ export class DatapointController {
     })
     datapoint: Omit<Datapoint, 'id'>,
   ): Promise<Datapoint> {
+    const coordinates: any = datapoint.coordinates;
+    datapoint.coordinates = {
+      type: 'Point',
+      coordinates: [
+        parseFloat(coordinates.lng), parseFloat(coordinates.lat)],
+    };
     return this.datapointRepository.create(datapoint);
-  }
-
-  @get('/datapoints/count', {
-    responses: {
-      '200': {
-        description: 'Datapoint model count',
-        content: {'application/json': {schema: CountSchema}},
-      },
-    },
-  })
-  async count(
-    @param.where(Datapoint) where?: Where<Datapoint>,
-  ): Promise<Count> {
-    return this.datapointRepository.count(where);
   }
 
   @get('/datapoints', {
@@ -84,27 +76,6 @@ export class DatapointController {
     return this.datapointRepository.find(filter);
   }
 
-  @patch('/datapoints', {
-    responses: {
-      '200': {
-        description: 'Datapoint PATCH success count',
-        content: {'application/json': {schema: CountSchema}},
-      },
-    },
-  })
-  async updateAll(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(Datapoint, {partial: true}),
-        },
-      },
-    })
-    datapoint: Datapoint,
-    @param.where(Datapoint) where?: Where<Datapoint>,
-  ): Promise<Count> {
-    return this.datapointRepository.updateAll(datapoint, where);
-  }
 
   @get('/datapoints/{id}', {
     responses: {
@@ -123,51 +94,5 @@ export class DatapointController {
     @param.filter(Datapoint, {exclude: 'where'}) filter?: FilterExcludingWhere<Datapoint>
   ): Promise<Datapoint> {
     return this.datapointRepository.findById(id, filter);
-  }
-
-  @patch('/datapoints/{id}', {
-    responses: {
-      '204': {
-        description: 'Datapoint PATCH success',
-      },
-    },
-  })
-  async updateById(
-    @param.path.string('id') id: string,
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(Datapoint, {partial: true}),
-        },
-      },
-    })
-    datapoint: Datapoint,
-  ): Promise<void> {
-    await this.datapointRepository.updateById(id, datapoint);
-  }
-
-  @put('/datapoints/{id}', {
-    responses: {
-      '204': {
-        description: 'Datapoint PUT success',
-      },
-    },
-  })
-  async replaceById(
-    @param.path.string('id') id: string,
-    @requestBody() datapoint: Datapoint,
-  ): Promise<void> {
-    await this.datapointRepository.replaceById(id, datapoint);
-  }
-
-  @del('/datapoints/{id}', {
-    responses: {
-      '204': {
-        description: 'Datapoint DELETE success',
-      },
-    },
-  })
-  async deleteById(@param.path.string('id') id: string): Promise<void> {
-    await this.datapointRepository.deleteById(id);
   }
 }

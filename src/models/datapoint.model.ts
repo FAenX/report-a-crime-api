@@ -34,9 +34,9 @@ export class Datapoint extends Entity {
 
   @property({
     type: 'date',
-    required: true,
+    default: new Date()
   })
-  date: Date;
+  date?: Date;
 
 
   constructor(data?: Partial<Datapoint>) {

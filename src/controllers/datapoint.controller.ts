@@ -77,11 +77,13 @@ export class DatapointController {
      const data = await this.datapointRepository.find(filter);
 
      let mapResult = data.map(async (datum)=>{
-       
-      const data = {
-        primary: datum.date ? new Date(datum.date) : null,
-        secondary: datum.date ? (await this.datapointRepository.count({ date: { eq: datum.date } })).count: 0
-     }
+
+      let data;
+
+      datum.date ?  data = {
+        primary: new Date(datum.date),
+        secondary: (await this.datapointRepository.count({ date: { eq: datum.date } })).count
+      } : data = null 
 
      return data
      

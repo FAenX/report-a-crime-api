@@ -81,7 +81,7 @@ export class DatapointController {
       let data;
 
       datum.date ?  data = {
-        primary: new Date(datum.date),
+        primary: new Date(datum.date).toString(),
         secondary: (await this.datapointRepository.count({ date: { eq: datum.date } })).count
       } : data = null 
 
@@ -101,5 +101,5 @@ export class DatapointController {
 
 type CrimeDateGraph= [{
   label: string,
-  data: {primary: Date, secondary: number }[]
+  data: {primary: string, secondary: number }[]
 }]

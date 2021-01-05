@@ -18,6 +18,7 @@ import {
 } from '@loopback/rest';
 import {Datapoint} from '../models';
 import {DatapointRepository} from '../repositories';
+import _ from 'lodash'
 
 export class DatapointController {
   constructor(
@@ -62,8 +63,7 @@ export class DatapointController {
         content: {
           'application/json': {
             schema: {
-              type: 'array',
-              items: getModelSchemaRef(Datapoint, {includeRelations: true}),
+              type: 'object',
             },
           },
         },
@@ -72,27 +72,32 @@ export class DatapointController {
   })
   async find(
     @param.filter(Datapoint) filter?: Filter<Datapoint>,
-  ): Promise<Datapoint[]> {
-    return this.datapointRepository.find(filter);
-  }
+  ): Promise<CrimeDateGraph> {
+   
+     const data = await this.datapointRepository.find(filter);
+
+     let mapResult = data.map(async (datum)=>{
+       
+      const data = {
+        primary: datum.date ? new Date(datum.date) : null,
+        secondary: datum.date ? (await this.datapointRepository.count({ date: { eq: datum.date } })).count: 0
+     }
+
+     return data
+     
+    })
+    
+    const res = await Promise.all(mapResult)
+     
+
+     return [{label: 'crime per date', data: _.compact(res)}]
 
 
-  @get('/datapoints/{id}', {
-    responses: {
-      '200': {
-        description: 'Datapoint model instance',
-        content: {
-          'application/json': {
-            schema: getModelSchemaRef(Datapoint, {includeRelations: true}),
-          },
-        },
-      },
-    },
-  })
-  async findById(
-    @param.path.string('id') id: string,
-    @param.filter(Datapoint, {exclude: 'where'}) filter?: FilterExcludingWhere<Datapoint>
-  ): Promise<Datapoint> {
-    return this.datapointRepository.findById(id, filter);
   }
+  
 }
+
+type CrimeDateGraph= [{
+  label: string,
+  data: {primary: Date | null , secondary: number }[]
+}]

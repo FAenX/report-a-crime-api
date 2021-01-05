@@ -101,5 +101,5 @@ export class DatapointController {
 
 type CrimeDateGraph= [{
   label: string,
-  data: {primary: Date | null , secondary: number }[]
+  data: {primary: string, secondary: number }[]
 }]

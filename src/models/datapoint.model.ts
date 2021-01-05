@@ -5,6 +5,10 @@ export interface Coordinates {
   coordinates: number[]
 }
 
+const year = new Date().getFullYear()
+const month = new Date().getMonth()
+const date = new Date().getDate()
+
 @model()
 export class Datapoint extends Entity {
   @property({
@@ -34,7 +38,7 @@ export class Datapoint extends Entity {
 
   @property({
     type: 'date',
-    default: new Date()
+    default: new Date(year, month, date)
   })
   date?: Date;
 

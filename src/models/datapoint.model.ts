@@ -42,6 +42,12 @@ export class Datapoint extends Entity {
   })
   date?: Date;
 
+  @property({
+    type: 'string',
+    required: true
+  })
+  details?: string;
+
 
   constructor(data?: Partial<Datapoint>) {
     super(data);

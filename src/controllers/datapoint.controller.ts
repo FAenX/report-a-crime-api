@@ -4,7 +4,7 @@ import {
 } from '@loopback/repository';
 import {
   get,
-  getModelSchemaRef, param, post,
+  getModelSchemaRef, HttpErrors, param, post,
 
 
 
@@ -41,8 +41,13 @@ export class DatapointController {
     datapoint: Omit<Datapoint, 'id'>,
   ): Promise<Datapoint> {
     console.log(datapoint)
+    try{
+      return await this.datapointRepository.create(datapoint);
+    }catch(e){
+      throw new HttpErrors[400](e.message)
+    }
 
-    return this.datapointRepository.create(datapoint);
+
   }
 
   @get('/datapoints', {

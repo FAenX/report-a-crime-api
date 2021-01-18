@@ -76,11 +76,13 @@ export class DatapointController {
 
     if(coordinates){
       const d = await this.geocoder.geoSearch(coordinates)
-      return this.dataFactory.byDate(d as Datapoint[])
+      const byDate = this.dataFactory.byDate(d as Datapoint[])
+      return {byDate: {...byDate}}
     }
 
      const data = await this.datapointRepository.find();
-     return this.dataFactory.byDate(data)
+     const byDate = this.dataFactory.byDate(data)
+     return {byDate: {...byDate}}
   }
 
 }

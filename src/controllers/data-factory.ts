@@ -26,6 +26,6 @@ export class DataFactory{
       return sorted[mo] ? sorted[mo] = sorted[mo] + 1: sorted[mo] = 1;
     })
 
-    return {byDate: {...sorted}}
+    return {...sorted}
   }
 }

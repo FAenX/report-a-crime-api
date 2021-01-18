@@ -1,6 +1,6 @@
 import {Entity, model, property} from '@loopback/repository';
 
-export interface Coordinates {
+export type Coordinates = {
   type: 'Point',
   coordinates: number[]
 }

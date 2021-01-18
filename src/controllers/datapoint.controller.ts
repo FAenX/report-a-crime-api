@@ -1,24 +1,17 @@
 import {
-  Count,
-  CountSchema,
   Filter,
-  FilterExcludingWhere,
-  repository,
-  Where,
+  repository
 } from '@loopback/repository';
 import {
-  post,
-  param,
   get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
+  getModelSchemaRef, param, post,
+
+
+
+  requestBody
 } from '@loopback/rest';
 import {Datapoint} from '../models';
 import {DatapointRepository} from '../repositories';
-import _ from 'lodash'
 
 export class DatapointController {
   constructor(
@@ -47,12 +40,8 @@ export class DatapointController {
     })
     datapoint: Omit<Datapoint, 'id'>,
   ): Promise<Datapoint> {
-    const coordinates: any = datapoint.coordinates;
-    datapoint.coordinates = {
-      type: 'Point',
-      coordinates: [
-        parseFloat(coordinates.lng), parseFloat(coordinates.lat)],
-    };
+    console.log(datapoint)
+
     return this.datapointRepository.create(datapoint);
   }
 
@@ -72,34 +61,34 @@ export class DatapointController {
   })
   async find(
     @param.filter(Datapoint) filter?: Filter<Datapoint>,
-  ): Promise<CrimeDateGraph> {
-   
+  ): Promise<Datapoint[]> {
+
      const data = await this.datapointRepository.find(filter);
 
-     let mapResult = data.map(async (datum)=>{
+    //  let mapResult = data.map(async (datum)=>{
 
-      let data;
+    //   let data;
 
-      datum.date ?  data = {
-        primary: new Date(datum.date).toString(),
-        secondary: (await this.datapointRepository.count({ date: { eq: datum.date } })).count
-      } : data = null 
+    //   datum.date ?  data = {
+    //     primary: new Date(datum.date).toString(),
+    //     secondary: (await this.datapointRepository.count({ date: { eq: datum.date } })).count
+    //   } : data = null
 
      return data
-     
-    })
-    
-    const res = await Promise.all(mapResult)
-     
 
-     return [{label: 'crime per date', data: _.compact(res)}]
+    // })
+
+    // const res = await Promise.all(mapResult)
+
+
+    //  return [{label: 'crime per date', data: _.compact(res)}]
 
 
   }
-  
+
 }
 
-type CrimeDateGraph= [{
-  label: string,
-  data: {primary: string, secondary: number }[]
-}]
+// type CrimeDateGraph= [{
+//   label: string,
+//   data: {primary: string, secondary: number }[]
+// }]

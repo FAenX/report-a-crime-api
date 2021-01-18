@@ -1,14 +1,20 @@
 import {BootMixin} from '@loopback/boot';
 import {ApplicationConfig} from '@loopback/core';
-import {
-  RestExplorerBindings,
-  RestExplorerComponent,
-} from '@loopback/rest-explorer';
 import {RepositoryMixin} from '@loopback/repository';
 import {RestApplication} from '@loopback/rest';
+import {
+  RestExplorerBindings,
+  RestExplorerComponent
+} from '@loopback/rest-explorer';
 import {ServiceMixin} from '@loopback/service-proxy';
+import dotenv from 'dotenv';
 import path from 'path';
+import {DataFactory} from './controllers';
+import {DataFactoryBindings, geoCoderServiceBindings} from './keys';
 import {MySequence} from './sequence';
+import {GeocoderService} from './services';
+
+dotenv.config()
 
 export {ApplicationConfig};
 
@@ -40,5 +46,15 @@ export class NaphProjectLoopbackApplication extends BootMixin(
         nested: true,
       },
     };
+    this.setupBindings()
+  }
+
+  setupBindings(){
+
+    this.bind(geoCoderServiceBindings.GeoServiceInstance)
+      .toClass(GeocoderService);
+
+    this.bind(DataFactoryBindings.DataFactoryInstance)
+      .toClass(DataFactory);
   }
 }

@@ -1,5 +1,5 @@
+import {inject} from '@loopback/core';
 import {
-  Filter,
   repository
 } from '@loopback/repository';
 import {
@@ -12,11 +12,17 @@ import {
 } from '@loopback/rest';
 import {Datapoint} from '../models';
 import {DatapointRepository} from '../repositories';
+import {GeocoderService} from '../services';
+import {DataFactory} from './data-factory';
 
 export class DatapointController {
   constructor(
     @repository(DatapointRepository)
     public datapointRepository : DatapointRepository,
+    @inject('service.geocoder')
+    private geocoder: GeocoderService,
+    @inject('data-factory')
+    private dataFactory: DataFactory
   ) {}
 
   @post('/datapoints', {
@@ -65,35 +71,16 @@ export class DatapointController {
     },
   })
   async find(
-    @param.filter(Datapoint) filter?: Filter<Datapoint>,
-  ): Promise<Datapoint[]> {
+    @param.query.object('coordinates') coordinates?: {lat: number, lng: number},
+  ): Promise<any> {
 
-     const data = await this.datapointRepository.find(filter);
+    if(coordinates){
+      const d = await this.geocoder.geoSearch(coordinates)
+      return this.dataFactory.byDate(d as Datapoint[])
+    }
 
-    //  let mapResult = data.map(async (datum)=>{
-
-    //   let data;
-
-    //   datum.date ?  data = {
-    //     primary: new Date(datum.date).toString(),
-    //     secondary: (await this.datapointRepository.count({ date: { eq: datum.date } })).count
-    //   } : data = null
-
-     return data
-
-    // })
-
-    // const res = await Promise.all(mapResult)
-
-
-    //  return [{label: 'crime per date', data: _.compact(res)}]
-
-
+     const data = await this.datapointRepository.find();
+     return this.dataFactory.byDate(data)
   }
 
 }
-
-// type CrimeDateGraph= [{
-//   label: string,
-//   data: {primary: string, secondary: number }[]
-// }]

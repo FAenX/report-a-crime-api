@@ -54,8 +54,11 @@
     "@loopback/rest": "^9.0.0",
     "@loopback/rest-explorer": "^3.0.3",
     "@loopback/service-proxy": "^3.0.3",
+    "date-fns": "^2.16.1",
+    "dotenv": "^8.2.0",
     "lodash": "^4.17.20",
     "loopback-connector-mongodb": "^5.2.3",
+    "mongoose": "^5.11.12",
     "tslib": "^2.0.0"
   },
   "devDependencies": {

@@ -40,7 +40,7 @@ export class Datapoint extends Entity {
     type: 'date',
     default: new Date(year, month, date)
   })
-  date?: Date;
+  date: Date;
 
   @property({
     type: 'string',

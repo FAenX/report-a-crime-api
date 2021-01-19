@@ -52,7 +52,7 @@ export class GeocoderService {
       });
       return datapoints;
     } catch (e) {
-      throw new HttpErrors.BadRequest(e);
+      throw new HttpErrors.BadRequest(e.message);
     }
   }
 

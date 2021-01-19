@@ -75,9 +75,11 @@ export class DatapointController {
   ): Promise<any> {
 
     if(coordinates){
-      const d = await this.geocoder.geoSearch(coordinates)
-      const byDate = await this.dataFactory.byDate(d as Datapoint[])
-      return {byDate: {...byDate}}
+      try{
+        const d = await this.geocoder.geoSearch(coordinates)
+        const byDate = await this.dataFactory.byDate(d as Datapoint[])
+        return {byDate: {...byDate}}
+      }catch(e){throw new HttpErrors.BadRequest(e.message)}
     }
 
      const data = await this.datapointRepository.find();
